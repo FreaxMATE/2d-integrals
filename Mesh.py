@@ -3,74 +3,107 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Node:
+    """
+    Represents a node in 2D space with x and y coordinates.
+    """
     def __init__(self, x, y):
+        """
+        Initializes a Node object.
+
+        Arguments:
+            x: The x-coordinate of the node.
+            y: The y-coordinate of the node.
+
+        Returns:
+            None
+        """
         self.x = x
         self.y = y
     
     def get_x(self):
+        """
+        Retrieves the x-coordinate of the node.
+
+        Arguments:
+            None
+
+        Returns:
+            The x-coordinate of the node.
+        """
         return self.x
     
     def get_y(self):
+        """
+        Retrieves the y-coordinate of the node.
+
+        Arguments:
+            None
+
+        Returns:
+            The y-coordinate of the node.
+        """
         return self.y
 
 
 class Triangle:
     def __init__(self, node_1, node_2, node_3):
         """
-        Explanation
+        Initializes a Triangle object with three nodes.
 
         Arguments:
-            node_1: Explanation
-            node_2: Explanation
-            node_3: Explanation
+            node_1: The first node of the triangle (instance of Node).
+            node_2: The second node of the triangle (instance of Node).
+            node_3: The third node of the triangle (instance of Node).
 
         Returns:
             None
         """
+        # Ensure all inputs are instances of the Node class
         if not isinstance(node_1, Node) or not isinstance(node_2, Node) or not isinstance(node_3, Node):
             raise TypeError('Triangle consists of three nodes.')
 
+        # Assign the nodes to the triangle
         self.n1 = node_1
         self.n2 = node_2
         self.n3 = node_3
-        pass
 
     def get_nodes(self):
         """
-        Explanation
+        Retrieves the three nodes of the triangle.
 
         Arguments:
             None
 
         Returns:
-            None
+            A tuple containing the three nodes (n1, n2, n3).
         """
         return self.n1, self.n2, self.n3
 
 class Mesh:
     def __init__(self, coordinates, nodes):
         """
-        Explanation
+        Initializes the Mesh object by creating triangles from the given coordinates and nodes.
 
         Arguments:
-            coordinates: Explanation
-            nodes: Explanation
+            coordinates: A 2D array where each column represents the x and y coordinates of a node.
+            nodes: A 2D array where each column contains the indices of the nodes forming a triangle.
 
         Returns:
             None
         """
-        self.triangels = []
+        self.triangels = []  # List to store all the triangles in the mesh.
 
+        # Number of triangles in the mesh.
         n_triangles = int(len(nodes[0]))
 
-        #if len(nodes.shape) == 1:
-         #   nodes = np.expand_dims(nodes, axis=1)
-
+        # Loop through each triangle defined in the nodes array.
         for i in range(n_triangles):
-            n1 = nodes[0][i]-1
-            n2 = nodes[1][i]-1
-            n3 = nodes[2][i]-1
+            # Get the indices of the three nodes forming the triangle (adjusted for 0-based indexing).
+            n1 = nodes[0][i] - 1
+            n2 = nodes[1][i] - 1
+            n3 = nodes[2][i] - 1
 
+            # Retrieve the coordinates of the three nodes.
             x1 = coordinates[0][int(n1)]
             y1 = coordinates[1][int(n1)]
             x2 = coordinates[0][int(n2)]
@@ -78,114 +111,159 @@ class Mesh:
             x3 = coordinates[0][int(n3)]
             y3 = coordinates[1][int(n3)]
 
+            # Create a Triangle object using the three nodes and add it to the list of triangles.
             triangle = Triangle(Node(x1, y1), Node(x2, y2), Node(x3, y3))
             self.triangels.append(triangle)
 
+        # Compute and store the determinants of the Jacobian matrices for all triangles.
         self.determinants = self.list_determinants(triangles=self.triangels)
 
 
     # Task 2
     def determinant(self, triangle):
         """
-        Explanation
+        Computes the determinant of the Jacobian matrix for a given triangle.
 
         Arguments:
-            triangle: Triangle to get coordinates of the three nodes
+            triangle: Triangle object to get coordinates of the three nodes.
 
         Returns:
-            determinant of the jacobian matrix
+            Determinant of the Jacobian matrix.
         """
+        # Ensure the input is a Triangle object.
         if not isinstance(triangle, Triangle):
             raise TypeError('Can only compute determinant of type Triangle.')
 
+        # Retrieve the three nodes of the triangle.
         n1, n2, n3 = triangle.get_nodes()
 
-        jacobian = [[(n2.x - n1.x), (n2.y - n1.y)], [(n3.x - n1.x), (n3.y - n1.y)]]
+        # Construct the Jacobian matrix using the coordinates of the nodes.
+        # The Jacobian matrix is formed by the vectors from n1 to n2 and n1 to n3.
+        jacobian = [[(n2.x - n1.x), (n2.y - n1.y)], 
+                    [(n3.x - n1.x), (n3.y - n1.y)]]
 
+        # Compute and return the determinant of the Jacobian matrix.
+        # Determinant formula: ad - bc for a 2x2 matrix [[a, b], [c, d]].
         return jacobian[0][0]*jacobian[1][1] - jacobian[0][1]*jacobian[1][0]
 
     # Task 3
     def minimum_angle(self, triangle):
         """
-        Explanation
+        Computes the minimum angle of a given triangle.
 
         Arguments:
-            triangle: Explanation
+            triangle: A Triangle object for which the minimum angle is to be calculated.
 
         Returns:
-            None
+            The smallest angle (in radians) among the three angles of the triangle.
         """
+        # Retrieve the three nodes of the triangle.
         n1, n2, n3 = triangle.get_nodes()
 
-        # Calculate vectors relative to n1
-        v1 = (n2.x - n1.x, n2.y - n1.y)
-        v2 = (n3.x - n1.x, n3.y - n1.y)
-        v3 = (n3.x - n2.x, n3.y - n2.y)
+        # Calculate vectors relative to the first node (n1).
+        v1 = (n2.x - n1.x, n2.y - n1.y)  # Vector from n1 to n2.
+        v2 = (n3.x - n1.x, n3.y - n1.y)  # Vector from n1 to n3.
+        v3 = (n3.x - n2.x, n3.y - n2.y)  # Vector from n2 to n3.
 
-        # Compute angles using the dot product formula
-        phi_12 = math.acos((v1[0]*v2[0] + v1[1]*v2[1]) / (math.sqrt(v1[0]**2 + v1[1]**2) * math.sqrt(v2[0]**2 + v2[1]**2)))
-        phi_23 = math.acos((-v1[0]*v3[0] - v1[1]*v3[1]) / (math.sqrt(v1[0]**2 + v1[1]**2) * math.sqrt(v3[0]**2 + v3[1]**2)))
+        # Compute the angle between v1 and v2 using the dot product formula.
+        # Formula: cos(theta) = (v1 . v2) / (|v1| * |v2|).
+        phi_12 = math.acos((v1[0]*v2[0] + v1[1]*v2[1]) / 
+                           (math.sqrt(v1[0]**2 + v1[1]**2) * math.sqrt(v2[0]**2 + v2[1]**2)))
+
+        # Compute the angle between -v1 and v3 using the dot product formula.
+        # This is equivalent to the angle at the second node.
+        phi_23 = math.acos((-v1[0]*v3[0] - v1[1]*v3[1]) / 
+                           (math.sqrt(v1[0]**2 + v1[1]**2) * math.sqrt(v3[0]**2 + v3[1]**2)))
+
+        # Compute the third angle using the triangle angle sum property.
+        # The sum of angles in a triangle is always pi radians.
         phi_13 = math.pi - phi_12 - phi_23
 
+        # Return the smallest angle among the three.
         return min(phi_12, phi_23, phi_13)
 
     # Task 4
     def list_determinants(self, triangles):
         """
-        Explanation
+        Computes the determinants of the Jacobian matrices for a list of triangles.
+        Also checks if any triangle has an angle smaller than a threshold (2 degrees).
 
         Arguments:
-            List of triangles
+            triangles: List of Triangle objects.
 
         Returns:
-            None
+            A list of determinants for the given triangles.
         """
-        determinants = []
+        determinants = []  # Initialize an empty list to store determinants.
+
+        # Iterate through each triangle in the list.
         for t in triangles:
-            if self.minimum_angle(t) < (2*math.pi/(360)):
+            # Check if the minimum angle of the triangle is less than 2 degrees (in radians).
+            if self.minimum_angle(t) < (2 * math.pi / 360):
                 raise ValueError('Too small angle in triangle.')
+
+            # Compute the determinant of the Jacobian matrix for the triangle.
             determinants.append(self.determinant(t))
+
+        # Return the list of computed determinants.
         return determinants
 
     # Task 5
     def total_integral(self, function):
         """
-        Explanation
+        Computes the total integral of a given function over the entire mesh.
 
         Arguments:
-            function: Explanation
+            function: A callable function that takes two arguments (x, y) and returns a value.
 
         Returns:
-            None
+            The total integral of the function over all triangles in the mesh.
         """
-        total_integral = 0
+        total_integral = 0  # Initialize the total integral to zero.
+
+        # Iterate through each triangle in the mesh.
         for i, t in enumerate(self.triangels):
+            # Retrieve the three nodes of the triangle.
             n1, n2, n3 = t.get_nodes()
-            integral_triangle = (1/6)*abs(self.determinants[i])*(function(n1.x, n1.y) + function(n2.x, n2.y) + function(n3.x, n3.y))
+
+            # Compute the integral over the current triangle using the midpoint rule.
+            # The formula is (1/6) * |determinant| * (f(n1) + f(n2) + f(n3)).
+            integral_triangle = (1/6) * abs(self.determinants[i]) * (
+                function(n1.x, n1.y) + function(n2.x, n2.y) + function(n3.x, n3.y)
+            )
+
+            # Add the triangle's contribution to the total integral.
             total_integral += integral_triangle
+
+        # Return the computed total integral.
         return total_integral
 
     # Task 6
     def total_area(self):
         """
-        Explanation
+        Computes the total area of the mesh by summing up the areas of all triangles.
 
         Arguments:
             None
 
         Returns:
-            None
+            The total area of the mesh.
         """
-        total_area = 0
-        for i, t in enumerate(self.triangels):
-            total_area += 0.5*abs(self.determinants[i])
+        total_area = 0  # Initialize the total area to zero.
 
+        # Iterate through each triangle in the mesh.
+        for i, t in enumerate(self.triangels):
+            # Compute the area of the triangle using the determinant of its Jacobian matrix.
+            # The formula for the area of a triangle is 0.5 * |determinant|.
+            total_area += 0.5 * abs(self.determinants[i])
+
+        # Return the computed total area.
         return total_area
 
     # Task 7
     def draw(self):
         """
-        Explanation
+        Draws the mesh by plotting the scaled triangles.
 
         Arguments:
             None
@@ -193,31 +271,41 @@ class Mesh:
         Returns:
             None
         """
+        # Create a figure and axes for plotting.
         fig, axes = plt.subplots(figsize=(10, 10))
 
+        # Scaling factor for shrinking triangles towards their center of mass.
         scale = 0.3
 
+        # Iterate through each triangle in the mesh.
         for t in self.triangels:
+            # Retrieve the three nodes of the triangle.
             n1, n2, n3 = t.get_nodes()
-            com_x = (n1.x + n2.x + n3.x)/3
-            com_y = (n1.y + n2.y + n3.y)/3
 
-            # Area of a triangle: 
-            # 1/2 * |x1(y2 - y3) + x2(y3 - y1) + x3(y1 - y2)|.
-            # https://www.geeksforgeeks.org/check-whether-a-given-point-lies-inside-a-triangle-or-not/
+            # Compute the center of mass (COM) of the triangle.
+            com_x = (n1.x + n2.x + n3.x) / 3
+            com_y = (n1.y + n2.y + n3.y) / 3
 
-            #area = 1/2 * abs(n1.x*(n2.y - n3.y) + n2.y*(n3.y - n1.y) + n3.x*(n1.y - n2.y))
+            # Plot the scaled triangle by moving each vertex closer to the COM.
+            axes.plot(
+                [n1.x + (com_x - n1.x) * scale, n2.x + (com_x - n2.x) * scale, n3.x + (com_x - n3.x) * scale, n1.x + (com_x - n1.x) * scale],
+                [n1.y + (com_y - n1.y) * scale, n2.y + (com_y - n2.y) * scale, n3.y + (com_y - n3.y) * scale, n1.y + (com_y - n1.y) * scale],
+                label='scaled'
+            )
 
-            scale = scale
+            # Uncomment the following lines to plot additional details:
+            # Plot the unscaled triangle.
+            # axes.plot([n1.x, n2.x, n3.x, n1.x], [n1.y, n2.y, n3.y, n1.y], label='unscaled')
 
-            axes.plot([n1.x+(com_x-n1.x)*scale, n2.x+(com_x-n2.x)*scale, n3.x+(com_x-n3.x)*scale, n1.x+(com_x-n1.x)*scale], [n1.y+(com_y-n1.y)*scale, n2.y+(com_y-n2.y)*scale, n3.y+(com_y-n3.y)*scale, n1.y+(com_y-n1.y)*scale], label='scaled')
-
-            #axes.plot([n1.x, n2.x, n3.x, n1.x], [n1.y, n2.y, n3.y, n1.y], label='unscaled')
+            # Plot the individual nodes of the triangle.
             # axes.plot([n1.x], [n1.y], '.', label='1')
             # axes.plot([n2.x], [n2.y], '.', label='2')
             # axes.plot([n3.x], [n3.y], '.', label='3')
-            #axes.scatter(com_x, com_y, c='black')
 
+            # Plot the center of mass of the triangle.
+            # axes.scatter(com_x, com_y, c='black')
+
+        # Display the plot.
         plt.show()
 
 if __name__ == "__main__":
