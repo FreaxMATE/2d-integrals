@@ -22,7 +22,14 @@ In this project, we focus on implementing an efficient algorithm for computing 2
     ```bash
     cd 2d-integrals
     ```
-3. Follow the instructions in the `setup.md` file to install dependencies and run the code. 🛠️
+3. Set up the development environment using `nix`:
+    ```bash
+    nix develop
+    ```
+5. Execute the `Mesh.py` script to generate the required mesh for integration:  
+    ```bash
+    python Mesh.py
+    ```
 
 ## Visualization 🖼️
 
