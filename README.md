@@ -28,8 +28,6 @@ In this project, we focus on implementing an efficient algorithm for computing 2
 
 ![Dolphin](dolphin.png)
 
-The above image represents a visualization related to the project. Replace it with your own relevant visualizations as needed. 🌊
-
 ## License 📜
 
 This project is licensed under the GNU General Public License (GPL). See the `LICENSE` file for details. ⚖️
