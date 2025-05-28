@@ -12,6 +12,11 @@ In this project, we focus on implementing an efficient algorithm for computing 2
 - 📈 Analysis of the method's accuracy and performance.
 - 🎨 Visualization of integration domains and results.
 
+## Python Files Structure 🐍
+
+- **[Mesh.py](Mesh.py)**: Main implementation of the mesh, triangle, and node classes, as well as methods for numerical integration, area calculation, and visualization. This is the primary file to run and experiment with different meshes and integrals.
+- **[MeshTemplate.py](MeshTemplate.py)**: A template or skeleton version of the mesh code, useful for reference or starting new implementations.
+
 ## Getting Started 🚀
 
 1. Clone the repository:
