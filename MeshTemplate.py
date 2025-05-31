@@ -116,7 +116,7 @@ class Mesh:
         """
         pass
 
-    def list_determinants(self, triangles):
+    def compute_all_determinants(self, triangles):
         """
         Computes the determinants of the Jacobian matrices for a list of triangles.
         Also checks if any triangle has an angle smaller than a threshold (2 degrees).
