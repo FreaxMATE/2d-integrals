@@ -302,11 +302,18 @@ if __name__ == "__main__":
     plot_dir = "meshes/plots"
     os.makedirs(plot_dir, exist_ok=True)
 
+    # Open results.txt for writing all print outputs
+    results_file = open(os.path.join(plot_dir, "results.txt"), "w")
+
+    def print_and_log(*args, **kwargs):
+        print(*args, **kwargs)
+        print(*args, **kwargs, file=results_file)
+
     coordinates = np.loadtxt('meshes/coordinates_dolfin_coarse.txt')
     nodes = np.loadtxt('meshes/nodes_dolfin_coarse.txt')
     mesh = Mesh(coordinates=coordinates, nodes=nodes)
     mesh.draw(save_path=os.path.join(plot_dir, 'mesh_plot_dolfin_coarse.png'))
-    print(f"Total area of dolfin_coarse mesh: {mesh.total_area()}, Total integral: {mesh.total_integral(lambda x, y: 1)}")
+    print_and_log(f"Total area of dolfin_coarse mesh: {mesh.total_area()}, Total integral: {mesh.total_integral(lambda x, y: 1)}")
 
     # List of mesh sizes and corresponding file names
     mesh_sizes = [400, 1024, 2500, 10000]
@@ -323,13 +330,12 @@ if __name__ == "__main__":
         total_areas.append(area)
         # Save mesh plot for each mesh size
         m.draw(save_path=os.path.join(plot_dir, f'mesh_plot_{size}.png'))
-        print(f"Mesh size: {size}, Total area: {area}, Total integral: {integral}")
+        print_and_log(f"Mesh size: {size}, Total area: {area}, Total integral: {integral}")
 
     # Plotting
     plt.figure(figsize=(8, 6))
     plt.plot(mesh_sizes, total_areas, 's-', label='Total Area')
     plt.axhline(y=math.pi, color='tab:orange', linestyle='--', label='π', zorder=0)
-    plt.ylim(3.12, 3.16)
     plt.xlabel('Number of Nodes')
     plt.ylabel('Value')
     plt.title('Total Integral and Area vs Mesh Size')
@@ -359,7 +365,7 @@ if __name__ == "__main__":
             diff = abs(integral - analytical_val)
             integrals.append(integral)
             diffs.append(diff)
-            print(f"{fname}: Mesh size {size}, Integral {integral:.6f}, Analytical: {analytical_str} ({analytical_val:.6f}), Difference: {diff:.6e}")
+            print_and_log(f"{fname}: Mesh size {size}, Integral {integral:.6f}, Analytical: {analytical_str} ({analytical_val:.6f}), Difference: {diff:.6e}")
 
             # 3D plot of the function over the mesh nodes for all mesh sizes
             x = coordinates[0]
@@ -391,3 +397,5 @@ if __name__ == "__main__":
         safe_name = latex_name.replace(" ", "").replace("(", "").replace(")", "").replace("*", "star").replace("=", "").replace(",", "_").replace("$", "").replace("^", "pow").replace("{", "").replace("}", "")
         plt.savefig(os.path.join(plot_dir, f'integral_vs_meshsize_{safe_name}.png'))
         plt.close()
+
+    results_file.close()

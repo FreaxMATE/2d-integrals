@@ -1,0 +1,21 @@
+Total area of dolfin_coarse mesh: 0.9026852284404995, Total integral: 0.9026852284404995
+Mesh size: 400, Total area: 3.1271490193524976, Total integral: 3.1271490193524976
+Mesh size: 1024, Total area: 3.1359323337180056, Total integral: 3.1359323337180056
+Mesh size: 2500, Total area: 3.139271333036456, Total integral: 3.139271333036456
+Mesh size: 10000, Total area: 3.1410119523547677, Total integral: 3.1410119523547677
+f(x, y) = 1: Mesh size 400, Integral 3.127149, Analytical: π (3.141593), Difference: 1.444363e-02
+f(x, y) = 1: Mesh size 1024, Integral 3.135932, Analytical: π (3.141593), Difference: 5.660320e-03
+f(x, y) = 1: Mesh size 2500, Integral 3.139271, Analytical: π (3.141593), Difference: 2.321321e-03
+f(x, y) = 1: Mesh size 10000, Integral 3.141012, Analytical: π (3.141593), Difference: 5.807012e-04
+f(x, y) = x: Mesh size 400, Integral -0.000000, Analytical: 0 (0.000000), Difference: 9.367507e-17
+f(x, y) = x: Mesh size 1024, Integral 0.000000, Analytical: 0 (0.000000), Difference: 6.071532e-17
+f(x, y) = x: Mesh size 2500, Integral 0.000000, Analytical: 0 (0.000000), Difference: 3.968180e-17
+f(x, y) = x: Mesh size 10000, Integral -0.000000, Analytical: 0 (0.000000), Difference: 2.233456e-17
+f(x, y) = x**2 + y**2: Mesh size 400, Integral 1.575140, Analytical: π/2 (1.570796), Difference: 4.343698e-03
+f(x, y) = x**2 + y**2: Mesh size 1024, Integral 1.572531, Analytical: π/2 (1.570796), Difference: 1.734309e-03
+f(x, y) = x**2 + y**2: Mesh size 2500, Integral 1.571515, Analytical: π/2 (1.570796), Difference: 7.183222e-04
+f(x, y) = x**2 + y**2: Mesh size 10000, Integral 1.570977, Analytical: π/2 (1.570796), Difference: 1.803787e-04
+f(x, y) = exp(-x**2 - y**2): Mesh size 400, Integral 1.974225, Analytical: π(1 - e^{-1}) (1.985865), Difference: 1.164064e-02
+f(x, y) = exp(-x**2 - y**2): Mesh size 1024, Integral 1.981275, Analytical: π(1 - e^{-1}) (1.985865), Difference: 4.590643e-03
+f(x, y) = exp(-x**2 - y**2): Mesh size 2500, Integral 1.983976, Analytical: π(1 - e^{-1}) (1.985865), Difference: 1.889291e-03
+f(x, y) = exp(-x**2 - y**2): Mesh size 10000, Integral 1.985392, Analytical: π(1 - e^{-1}) (1.985865), Difference: 4.732640e-04
